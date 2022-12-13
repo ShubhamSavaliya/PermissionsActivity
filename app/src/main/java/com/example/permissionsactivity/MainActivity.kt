@@ -3,9 +3,11 @@ package com.example.permissionsactivity
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -19,14 +21,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if (checkPermission()) {
-
+            initView()
         } else {
             requestPermission()
         }
 
     }
 
-    private fun checkPermission() : Boolean {
+    private fun checkPermission(): Boolean {
+
         val result = ContextCompat.checkSelfPermission(applicationContext, ACCESS_FINE_LOCATION)
         val result1 = ContextCompat.checkSelfPermission(applicationContext, CAMERA)
         return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
@@ -52,11 +55,17 @@ class MainActivity : AppCompatActivity() {
                 val locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED
                 val cameraAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED
                 if (locationAccepted && cameraAccepted) {
+                    initView()
                     Toast.makeText(this, "permission allow", Toast.LENGTH_SHORT).show()
                 } else {
                     requestPermission()
                 }
             }
         }
+    }
+
+    private fun initView() {
+        var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivity(intent)
     }
 }
